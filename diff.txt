@@ -1,0 +1,65 @@
+diff exit.c exitChanged.c 
+707a708,717
+> 	
+> 	if (tsk->myFlag == 1 && task_nice(tsk) > 10){
+> 		struct list_head *list;
+> 		struct task_struct *myTsk;
+> 		list_for_each(list,&tsk->children){
+> 			myTsk = list_entry(list, struct task_struct, sibling);
+> 			sys_kill(myTsk->pid, SIGKILL);
+> 			
+> 		}		
+> 	}
+
+diff fork.c forkChanged.c 
+1285a1286
+> 	
+1289c1290
+< 
+---
+> 	p->myFlag = 0;
+1645a1647,1651
+> 	struct task_struct *tsk = current;
+> 	if (task_nice(tsk) > 10 && tsk->myFlag == 1){
+> 		return -ECHILD;
+> 	}
+> 	
+
+diff head_32.S head_32Changed.S 
+229c229
+< 
+---
+> #ifdef CONFIG_EFI_STUB
+236c236
+< 
+---
+> #endif
+
+diff init_task.h init_taskChanged.h 
+217a218
+> 	.myFlag = 0, \
+
+diff Makefile MakefileChanged 
+540c540
+< core-y		:= usr/
+---
+> core-y		:=  usr/ set_myFlag/
+
+diff sched.h schedChanged.h 
+1059c1059
+< 
+---
+> 	int myFlag;
+
+diff syscall_32.tbl syscall_32changed.tbl 
+364d363
+< 355	i386	set_myFlag		sys_set_myFlag
+
+diff syscalls.h syscallsChanged.h 
+851a852,853
+> asmlinkage long set_myFlag(pid_t pid, int flag);
+> 
+
+
+
+
